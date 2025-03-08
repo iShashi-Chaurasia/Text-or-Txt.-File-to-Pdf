@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text or Txt. File to PDF Converter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+ <style>
+  
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', Arial, sans-serif;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: #333;
+}
+
+.container {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.upload-btn {
+  background: #6a11cb;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.upload-btn:hover {
+  background: #2575fc;
+}
+
+textarea {
+  width: 100%;
+  height: 200px;
+  padding: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  resize: none;
+  margin-bottom: 1rem;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #6a11cb;
+}
+
+.counter {
+  text-align: right;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+button {
+  background: #6a11cb;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+button:hover {
+  background: #2575fc;
+}
+ </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Text to PDF Converter</h1>
+    <input type="file" id="fileInput" accept=".txt" style="display: none;">
+    <label for="fileInput" class="upload-btn">Upload Text File</label>
+    <textarea id="textInput" placeholder="Enter your text here..."></textarea>
+    <div class="counter">
+      <span id="charCount">0</span> characters
+    </div>
+    <button id="downloadBtn">Download PDF</button>
+  </div>
+
+ <script>
+  // Initialize jsPDF
+const { jsPDF } = window.jspdf;
+
+// Get DOM elements
+const fileInput = document.getElementById("fileInput");
+const textInput = document.getElementById("textInput");
+const downloadBtn = document.getElementById("downloadBtn");
+const charCount = document.getElementById("charCount");
+
+// Update character count in real-time
+textInput.addEventListener("input", () => {
+  const text = textInput.value;
+  charCount.textContent = text.length;
+});
+
+// Handle file upload
+fileInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+
+  if (file && file.type === "text/plain") {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const fileContent = e.target.result;
+      textInput.value = fileContent; // Display file content in the text area
+      charCount.textContent = fileContent.length; // Update character count
+    };
+
+    reader.readAsText(file);
+  } else {
+    alert("Please upload a valid .txt file.");
+  }
+});
+
+
+downloadBtn.addEventListener("click", () => {
+  const text = textInput.value.trim();
+
+  if (text === "") {
+    alert("Please enter some text or upload a file!");
+    return;
+  }
+
+  // Create a new PDF instance
+  const doc = new jsPDF();
+
+  // Add custom font (Roboto)
+  doc.setFont("Roboto", "normal");
+
+  // Set font size
+  doc.setFontSize(12);
+
+  // Add text to the PDF
+  doc.text(text, 10, 10);
+
+  // Save the PDF
+  doc.save("converted-text.pdf");
+});
+ </script>
+</body>
+</html>
